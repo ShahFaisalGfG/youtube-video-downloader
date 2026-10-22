@@ -22,6 +22,29 @@ SHORT_URL = f"https://www.youtube.com/shorts/{VIDEO_ID}"
 PLAYLIST = download_playlist.YouTubeSource("playlist", "PLtest123")
 
 
+def test_version_flag_prints_the_version(capsys: pytest.CaptureFixture[str]) -> None:
+    """Print the script's version and exit without needing a URL."""
+    with pytest.raises(SystemExit) as exc:
+        download_playlist.parse_args(["--version"])
+    assert exc.value.code == 0
+    assert capsys.readouterr().out.strip() == (
+        f"youtube-video-downloader {download_playlist.__version__}"
+    )
+
+
+def test_main_returns_the_run_status() -> None:
+    """Hand the downloader's exit status to the shell."""
+    with patch.object(download_playlist, "run", return_value=1):
+        assert download_playlist.main() == 1
+
+
+def test_main_stops_on_ctrl_c(capsys: pytest.CaptureFixture[str]) -> None:
+    """Stop with status 130 and explain how to resume."""
+    with patch.object(download_playlist, "run", side_effect=KeyboardInterrupt):
+        assert download_playlist.main() == 130
+    assert "Run the same command to resume later." in capsys.readouterr().err
+
+
 def test_default_output_is_in_videos() -> None:
     """Put new playlists in the user's Videos directory by default."""
     args = download_playlist.parse_args([URL])

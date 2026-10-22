@@ -15,6 +15,7 @@ from typing import Literal
 from urllib.parse import parse_qs, urlparse
 
 
+__version__ = "1.0.0"
 MAX_RETRY_DELAY = 300
 DEFAULT_CONCURRENT_FRAGMENTS = 8
 MAX_CONCURRENT_FRAGMENTS = 16
@@ -108,6 +109,9 @@ def fragment_count(value: str) -> int:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse the URL, quality, output, and retry settings."""
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--version", action="version", version=f"youtube-video-downloader {__version__}"
+    )
     parser.add_argument("url", help="YouTube playlist, video, or Shorts URL")
     parser.add_argument(
         "-r",
@@ -349,9 +353,14 @@ def run(argv: list[str] | None = None) -> int:
         time.sleep(delay)
 
 
-if __name__ == "__main__":
+def main() -> int:
+    """Run the downloader and turn Ctrl+C into a stop that can be resumed."""
     try:
-        raise SystemExit(run())
+        return run()
     except KeyboardInterrupt:
         print("\nStopped. Run the same command to resume later.", file=sys.stderr)
-        raise SystemExit(130) from None
+        return 130
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

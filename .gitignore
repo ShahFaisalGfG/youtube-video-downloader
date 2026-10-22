@@ -1,4 +1,7 @@
 __pycache__/
 .pytest_cache/
+build/
+dist/
+*.egg-info/
 downloads/
 cookies*.txt

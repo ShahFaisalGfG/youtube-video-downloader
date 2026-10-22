@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "youtube-video-downloader"
+dynamic = ["version"]
+description = "Resumable YouTube playlist, video, and Shorts downloader that saves quality-labeled MP4s"
+authors = [{ name = "Shah Faisal", email = "shahfaisalgfg@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.scripts]
+youtube-video-downloader = "download_playlist:main"
+
+[project.urls]
+Homepage = "https://github.com/ShahFaisalGfG/youtube-video-downloader"
+Issues = "https://github.com/ShahFaisalGfG/youtube-video-downloader/issues"
+
+[tool.setuptools]
+py-modules = ["download_playlist"]
+
+# The version lives in the script, so a copy run on its own still knows it.
+[tool.setuptools.dynamic]
+version = { attr = "download_playlist.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
